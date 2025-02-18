@@ -1,8 +1,15 @@
 // components/header/Header.jsx
 import { Link } from 'react-router-dom';
+import { useAuth } from '../../features/auth/context/AuthContext';
 import './Header.css';
 
 const Header = () => {
+  const { isAuthenticated, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout(); // Call the logout function from AuthContext
+  };
+
   return (
     <header className="header">
       <div className="header-container">
@@ -12,13 +19,19 @@ const Header = () => {
         <nav className="nav-menu">
           <ul>
             <li><Link to="/">Home</Link></li>
-            <li><Link to="/dashboard">Dashboard</Link></li>
+            {isAuthenticated && <li><Link to="/dashboard">Dashboard</Link></li>}
             <li><Link to="/projects">Projects</Link></li>
           </ul>
         </nav>
         <div className="auth-buttons">
-          <Link to="/login" className="login-btn">Login</Link>
-          <Link to="/signup" className="signup-btn">Sign Up</Link>
+          {!isAuthenticated ? (
+            <>
+              <Link to="/login" className="login-btn">Login</Link>
+              <Link to="/signup" className="signup-btn">Sign Up</Link>
+            </>
+          ) : (
+            <button onClick={handleLogout} className="logout-btn">Logout</button>
+          )}
         </div>
       </div>
     </header>

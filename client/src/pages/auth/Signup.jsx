@@ -1,45 +1,43 @@
-// pages/auth/Signup.jsx
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import SignupForm from '../../components/auth/SignupForm';
 
 const SignupPage = () => {
   const navigate = useNavigate();
   const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (data) => {
     try {
-      // Reset any previous errors
+      setIsLoading(true);
       setError(null);
-      
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      // Log the data (for testing purposes)
-      console.log('Form submitted with:', data);
-      
-      // For testing: show success and redirect
-      alert('Account created successfully!');
-      navigate('/login');
-      
-      // Later this will be replaced with actual API call:
-      // const response = await axios.post('/api/auth/signup', data);
-      // handle response...
-      
-    } catch (err) {
-      setError(err.message || 'Something went wrong during signup');
-      console.error('Signup error:', err);
+
+      // Validate data before sending
+      if (!data || Object.values(data).some(value => !value)) {
+        throw new Error('Please fill in all required fields');
+      }
+
+      // Send data to the server
+      const response = await axios.post('http://localhost:5000/api/users/register', data);
+
+      // Handle successful response
+      if (response.status === 201) {
+        navigate('/login');
+      } else {
+        throw new Error('Failed to create account');
+      }
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <div className="signup-page">
-      {error && (
-        <div className="error-alert">
-          {error}
-        </div>
-      )}
-      <SignupForm onSubmit={handleSubmit} />
+      {error && <div className="error-message">{error}</div>}
+      <SignupForm onSubmit={handleSubmit} isLoading={isLoading} />
     </div>
   );
 };

@@ -1,28 +1,42 @@
 // pages/auth/Login.jsx
 import { useState } from 'react';
+import axios from 'axios';
 import LoginForm from '../../components/auth/LoginForm';
 
 const LoginPage = () => {
   const [loginData, setLoginData] = useState(null);
+  const [error, setError] = useState('');
 
-  // Temporary onSubmit function to test form
   const handleSubmit = async (data) => {
     try {
-      // Simulate API call with 1 second delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      console.log('Form submitted with:', data);
+      // Call the login API with the provided data
+      const response = await axios.post('http://localhost:5000/api/users/login', data);
+
+      // Save the token and clear the error message
+      const token = response.data.token;
+      console.log('JWT Token:', token);
+
+      // Optionally store the token in localStorage for future use
+      localStorage.setItem('token', token);
+
+      // Update state with submitted data for testing
       setLoginData(data);
-      // Later this will be replaced with actual API call
-    } catch (error) {
-      console.error('Login error:', error);
+      setError('');
+    } catch (err) {
+      // Handle errors
+      console.error('Login error:', err.response?.data?.message || err.message);
+      setError(err.response?.data?.message || 'An error occurred during login.');
     }
   };
 
   return (
     <div>
       <LoginForm onSubmit={handleSubmit} />
-      
-      {/* This section is just for testing - remove it later */}
+
+      {/* Display error message */}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
+
+      {/* This section is for testing - remove it later */}
       {loginData && (
         <div style={{ marginTop: '20px', padding: '20px' }}>
           <h3>Submitted Data (for testing):</h3>
