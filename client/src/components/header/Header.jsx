@@ -19,8 +19,14 @@ const Header = () => {
         <nav className="nav-menu">
           <ul>
             <li><Link to="/">Home</Link></li>
-            {isAuthenticated && <li><Link to="/dashboard">Dashboard</Link></li>}
-            <li><Link to="/projects">Projects</Link></li>
+            
+            {/* Show these links only when the user is authenticated */}
+            {isAuthenticated && (
+              <>
+                <li><Link to="/dashboard">Dashboard</Link></li>
+                <li><Link to="/projects">Projects</Link></li>
+              </>
+            )}
           </ul>
         </nav>
         <div className="auth-buttons">

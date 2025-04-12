@@ -1,4 +1,3 @@
-// App.jsx
 import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
 import { AuthProvider } from './features/auth/context/AuthContext';
 import ProtectedRoute from './components/auth/ProtectedRoutes';
@@ -7,6 +6,7 @@ import Layout from './layouts/AuthLayout';
 import Home from './pages/home/Home';
 import Login from './pages/auth/Login';
 import Dashboard from './pages/dashboard/Dashboard';
+import Projects from './pages/projects/projects';
 import Signup from './pages/auth/Signup';
 
 const router = createBrowserRouter(
@@ -17,19 +17,21 @@ const router = createBrowserRouter(
         <Route index element={<Home />} />
         <Route path="login" element={<Login />} />
         <Route path="signup" element={<Signup />} />
-        
-      </Route>
+        <Route path ="home" element ={<Home />} />
+
+       </Route>
 
       {/* Protected Routes */}
       <Route element={<ProtectedRoute />}>
         <Route path="dashboard" element={<Dashboard />} />
-        {/* Add other protected routes here */}
+        <Route path="projects" element={<Projects />} />
+        
       </Route>
     </Route>
   )
 );
 
-const App = () => {
+export const   App = () => {
   return (
     <AuthProvider>
       <RouterProvider router={router} />
